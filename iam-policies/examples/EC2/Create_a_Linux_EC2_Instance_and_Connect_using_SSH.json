@@ -1,0 +1,100 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1399948319000",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:Region": "us-east-1"
+        }
+      },
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1401047381000",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:*",
+        "route53:*",
+        "iam:PassRole",
+        "iam:ListInstanceProfiles",
+        "cloudwatch:*",
+        "elasticloadbalancing:*",
+        "sns:*",
+        "s3:*",
+        "rds:*",
+        "lambda:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1399948467000",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:AllocateHosts",
+        "ec2:CreateCustomerGateway",
+        "ec2:CreateDhcpOptions",
+        "ec2:CreateInstanceExportTask",
+        "ec2:CreatePlacementGroup",
+        "ec2:CreateReservedInstancesListing",
+        "ec2:DescribeReservedInstancesOfferings",
+        "ec2:DescribeReservedInstancesListings",
+        "ec2:PurchaseReservedInstancesOffering",
+        "ec2:ModifyReservedInstances",
+        "ec2:RequestSpotInstances",
+        "ec2:ModifySpotFleetRequest",
+        "ec2:DescribeSpotFleetInstances",
+        "ec2:CreateSpotDatafeedSubscription",
+        "ec2:CreateVpcPeeringConnection",
+        "ec2:CreateVpnConnection",
+        "ec2:CreateNatGateway",
+        "ec2:CreateVpnConnectionRoute",
+        "ec2:CreateVpnGateway",
+        "route53:DeleteHostedZone",
+        "route53:CreateHostedZone"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1418513905000",
+      "Effect": "Deny",
+      "Action": [
+        "rds:AddSourceIdentifierToSubscription",
+        "rds:CreateEventSubscription",
+        "rds:ModifyEventSubscription",
+        "rds:PurchaseReservedDBInstancesOffering"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "DenyG2InstancesFromBeingCreated",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:RunInstances"
+      ],
+      "Resource": [
+        "*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:InstanceType": [
+            "m4.10xlarge",
+            "m4.16xlarge"
+          ]
+        }
+      }
+    }
+  ]
+}

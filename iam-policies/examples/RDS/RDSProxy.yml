@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Parameters:
+  ProxyName:
+    Type: String
+    Default: exampleProxy
+  InstanceName:
+    Type: String
+    Default: database-1
+  BootstrapSecretReaderRoleArn:
+    Type: String
+    Default: arn:aws:iam::123456789012:role/RDSSecretReaderRoleForDBProxy
+  BootstrapProxySecretArn:
+    Type: String
+
+    Default: arn:aws:secretsmanager:us-west-2:123456789012:secret:MySecretForDBProxy
+  SubnetIds:
+    Type: String
+    Default: subnet-01b761b31fb498f20,subnet-012b9a958ef0f9949,subnet-05e8e263052025378
+Resources:
+  TestDBProxy:
+    Type: AWS::RDS::DBProxy
+    Properties:
+
+      DebugLogging: true
+      DBProxyName: !Ref ProxyName
+      EngineFamily: MYSQL
+      IdleClientTimeout: 120
+      RequireTLS: true
+      RoleArn:
+        !Ref BootstrapSecretReaderRoleArn
+      Auth:
+        - {AuthScheme: SECRETS, SecretArn: !Ref BootstrapProxySecretArn, IAMAuth: DISABLED}
+      VpcSubnetIds:
+
+        Fn::Split: [",", !Ref SubnetIds]
+  ProxyTargetGroup:
+    Type: AWS::RDS::DBProxyTargetGroup
+    Properties:
+      DBProxyName: !Ref TestDBProxy
+
+      DBInstanceIdentifiers: [!Ref InstanceName]
+      TargetGroupName: default
+      ConnectionPoolConfigurationInfo:
+        MaxConnectionsPercent: 12
+
+        MaxIdleConnectionsPercent: 11
+        ConnectionBorrowTimeout: 120

@@ -1,0 +1,107 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "VisualEditor0",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:CreateFunction",
+        "cloudformation:PreviewStackUpdate",
+        "cloudformation:ValidateTemplate",
+        "lambda:List*",
+        "lambda:*",
+        "lambda:Get*",
+        "cloudformation:List*",
+        "cloudformation:Get*",
+        "cloudformation:Describe*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "VisualEditor1",
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction",
+        "lambda:Update*",
+        "events:Delete*",
+        "iam:PassRole",
+        "lambda:AddPermission",
+        "cloudformation:CreateStack",
+        "cloudformation:DeleteStack",
+        "cloudformation:UpdateStack",
+        "lambda:DeleteFunction",
+        "lambda:PublishVersion",
+        "apigateway:GET",
+        "apigateway:POST",
+        "lambda:RemovePermission",
+        "lambda:CreateAlias"
+      ],
+      "Resource": [
+        "arn:aws:events:*:*:rule/training-aws-app*",
+        "arn:aws:cloudformation:*:*:stack/training-aws-app*",
+        "arn:aws:apigateway:*::/restapis",
+        "arn:aws:iam::*:role/*",
+        "arn:aws:lambda:*:*:function:training-aws-app*"
+      ]
+    },
+    {
+      "Sid": "VisualEditor2",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:DELETE",
+        "apigateway:PUT",
+        "apigateway:POST",
+        "apigateway:GET",
+        "apigateway:PATCH"
+      ],
+      "Resource": [
+        "arn:aws:apigateway:*::/restapis/*/*",
+        "arn:aws:apigateway:*::/restapis/*",
+        "arn:aws:apigateway:*::/tags/*"
+      ]
+    },
+    {
+      "Sid": "VisualEditor3",
+      "Effect": "Allow",
+      "Action": "kinesis:*",
+      "Resource": "arn:aws:kinesis:*:*:stream/training-aws-app*"
+    },
+    {
+      "Sid": "VisualEditor4",
+      "Effect": "Allow",
+      "Action": "iam:*",
+      "Resource": "arn:aws:iam::*:role/training-aws-app*"
+    },
+    {
+      "Sid": "VisualEditor5",
+      "Effect": "Allow",
+      "Action": "sqs:*",
+      "Resource": "arn:aws:sqs:*:*:training-aws-app*"
+    },
+    {
+      "Sid": "VisualEditor6",
+      "Effect": "Allow",
+      "Action": [
+        "events:Put*",
+        "events:Remove*"
+      ],
+      "Resource": "arn:aws:events:*:*:rule/training-aws-app*"
+    },
+    {
+      "Sid": "VisualEditor7",
+      "Effect": "Allow",
+      "Action": [
+        "s3:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "VisualEditor8",
+      "Effect": "Allow",
+      "Action": [
+        "logs:*"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

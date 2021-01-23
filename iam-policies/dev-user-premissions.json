@@ -1,0 +1,111 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "ec2:*",
+      "Resource": "*",
+      "Effect": "Allow",
+      "Condition": {
+        "StringEquals": {
+          "ec2:Region": "eu-central-1"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "ssm:*",
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateTags"
+      ],
+      "Resource": "arn:aws:ec2:*:*:*/*",
+      "Condition": {
+        "StringEquals": {
+          "ec2:CreateAction": "RunInstances"
+        }
+      }
+    },
+    {
+      "Sid": "Stmt1399948467000",
+      "Effect": "Deny",
+      "Action": [
+        "ec2:AllocateHosts",
+        "ec2:CreateCustomerGateway",
+        "ec2:CreateDhcpOptions",
+        "ec2:CreateInstanceExportTask",
+        "ec2:CreatePlacementGroup",
+        "ec2:CreateReservedInstancesListing",
+        "ec2:DescribeReservedInstancesOfferings",
+        "ec2:DescribeReservedInstancesListings",
+        "ec2:PurchaseReservedInstancesOffering",
+        "ec2:ModifyReservedInstances",
+        "ec2:RequestSpotInstances",
+        "ec2:ModifySpotFleetRequest",
+        "ec2:DescribeSpotFleetInstances",
+        "ec2:CreateSpotDatafeedSubscription",
+        "ec2:CreateVpcPeeringConnection",
+        "ec2:CreateVpnConnection",
+        "ec2:CreateNatGateway",
+        "ec2:CreateVpnConnectionRoute",
+        "ec2:CreateVpnGateway",
+        "route53:DeleteHostedZone",
+        "route53:CreateHostedZone"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1418513905000",
+      "Effect": "Deny",
+      "Action": [
+        "rds:AddSourceIdentifierToSubscription",
+        "rds:CreateEventSubscription",
+        "rds:ModifyEventSubscription",
+        "rds:PurchaseReservedDBInstancesOffering"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "RequireMicroInstanceType",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": "arn:aws:ec2:*:*:instance/*",
+      "Condition": {
+        "StringNotEquals": {
+          "ec2:InstanceType": "t2.micro"
+        }
+      }
+    },
+    {
+      "Sid": "DenyRunInstanceWithNoProjectTag",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*"
+      ],
+      "Condition": {
+        "Null": {
+          "aws:RequestTag/username": "true"
+        },
+        "StringNotEquals": {
+          "ec2:ResourceTag/username": "${aws:username}"
+        }
+      }
+    }
+  ]
+}

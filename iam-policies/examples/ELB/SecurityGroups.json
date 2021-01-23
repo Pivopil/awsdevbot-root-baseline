@@ -1,0 +1,102 @@
+{
+  "requestId": "99521aaf-e43c-463b-a8d5-f81ad74256a5",
+  "securityGroups": [
+    {
+      "description": "Enable access to the EC2 host",
+      "groupId": "sg-03d1ae524192a9f90",
+      "groupName": "cfst-2060-f6e5940064f1b050dd815c2f48ecf1dc-EC2SecurityGroup-W9XQ7GPL096P",
+      "ipPermissions": [
+        {
+          "fromPort": 80,
+          "ipProtocol": "tcp",
+          "ipRanges": [
+            {
+              "cidrIp": "0.0.0.0/0"
+            }
+          ],
+          "ipv6Ranges": [],
+          "prefixListIds": [],
+          "toPort": 80,
+          "userIdGroupPairs": [
+            {
+              "groupId": "sg-03d1ae524192a9f90",
+              "userId": "020102877866"
+            }
+          ]
+        },
+        {
+          "fromPort": 22,
+          "ipProtocol": "tcp",
+          "ipRanges": [
+            {
+              "cidrIp": "0.0.0.0/0"
+            }
+          ],
+          "ipv6Ranges": [],
+          "prefixListIds": [],
+          "toPort": 22,
+          "userIdGroupPairs": []
+        },
+        {
+          "fromPort": 443,
+          "ipProtocol": "tcp",
+          "ipRanges": [
+            {
+              "cidrIp": "0.0.0.0/0"
+            }
+          ],
+          "ipv6Ranges": [],
+          "prefixListIds": [],
+          "toPort": 443,
+          "userIdGroupPairs": []
+        },
+        {
+          "fromPort": -1,
+          "ipProtocol": "icmp",
+          "ipRanges": [
+            {
+              "cidrIp": "0.0.0.0/0"
+            }
+          ],
+          "ipv6Ranges": [],
+          "prefixListIds": [],
+          "toPort": -1,
+          "userIdGroupPairs": []
+        }
+      ],
+      "ipPermissionsEgress": [
+        {
+          "ipProtocol": "-1",
+          "ipRanges": [
+            {
+              "cidrIp": "0.0.0.0/0"
+            }
+          ],
+          "ipv6Ranges": [],
+          "prefixListIds": [],
+          "userIdGroupPairs": []
+        }
+      ],
+      "ownerId": "020102877866",
+      "tags": [
+        {
+          "key": "UserId",
+          "value": "sloth"
+        },
+        {
+          "key": "aws:cloudformation:stack-name",
+          "value": "cfst-2060-f6e5940064f1b050dd815c2f48ecf1dc"
+        },
+        {
+          "key": "aws:cloudformation:logical-id",
+          "value": "EC2SecurityGroup"
+        },
+        {
+          "key": "aws:cloudformation:stack-id",
+          "value": "arn:aws:cloudformation:us-east-1:020102877866:stack/cfst-2060-f6e5940064f1b050dd815c2f48ecf1dc/36fc6330-ab8d-11ea-9eb1-0e763951b664"
+        }
+      ],
+      "vpcId": "vpc-0b6ecbcc531ae55bf"
+    }
+  ]
+}

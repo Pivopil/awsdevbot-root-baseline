@@ -1,0 +1,46 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1399948319000",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "ec2:Region": "us-east-1"
+        }
+      },
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "Stmt1401047381000",
+      "Effect": "Allow",
+      "Action": [
+        "autoscaling:*",
+        "route53:*",
+        "iam:PassRole",
+        "iam:ListInstanceProfiles",
+        "iam:GetRole",
+        "iam:CreateRole",
+        "iam:ListRoles",
+        "iam:PassRole",
+        "iam:AssumeRole",
+        "iam:AttachRolePolicy",
+        "iam:ListRolePolicies",
+        "cloudwatch:*",
+        "elasticloadbalancing:*",
+        "sns:*",
+        "s3:*",
+        "rds:*",
+        "lambda:*"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}

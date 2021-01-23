@@ -1,0 +1,60 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": [
+        "cloudwatch:DeleteAlarms",
+        "cloudwatch:DescribeAlarmHistory",
+        "cloudwatch:DescribeAlarms",
+        "cloudwatch:DescribeAlarmsForMetric",
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:PutMetricAlarm",
+        "events:DeleteRule",
+        "events:DescribeRule",
+        "events:ListRules",
+        "events:ListTargetsByRule",
+        "events:PutRule",
+        "events:PutTargets",
+        "events:RemoveTargets",
+        "iam:*",
+        "kms:ListAliases",
+        "cloudformation:DescribeStackResources",
+        "cloudwatch:getMetricData",
+        "cloudwatch:listMetrics",
+        "logs:cancelExportTask",
+        "logs:createExportTask",
+        "logs:createLogGroup",
+        "logs:createLogStream",
+        "logs:deleteLogGroup",
+        "logs:deleteLogStream",
+        "logs:deleteMetricFilter",
+        "logs:deleteRetentionPolicy",
+        "logs:deleteSubscriptionFilter",
+        "logs:describeExportTasks",
+        "logs:describeLogGroups",
+        "logs:describeLogStreams",
+        "logs:describeMetricFilters",
+        "logs:describeSubscriptionFilters",
+        "logs:filterLogEvents",
+        "logs:getLogEvents",
+        "logs:putMetricFilter",
+        "logs:putRetentionPolicy",
+        "logs:putSubscriptionFilter",
+        "logs:testMetricFilter",
+        "tag:getResources",
+        "s3:*",
+        "lambda:*",
+        "ec2:*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Resource": "arn:aws:iam::*:role/lambda*",
+      "Action": [
+        "iam:PassRole"
+      ]
+    }
+  ]
+}
