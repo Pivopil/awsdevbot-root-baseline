@@ -1,6 +1,3 @@
-variable "uat_assume_role" {
-}
-
 locals {
   uat_account_domain = "uat.${var.public_subdomain}"
   uat_assume_role    = "arn:aws:iam::${var.uat_account_id}:role/OrganizationAccountAccessRole"
