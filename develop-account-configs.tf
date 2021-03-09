@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "develop-s3" {
 
 resource "aws_route53_zone" "develop_route53_zone" {
   provider = aws.develop
-  name = local.develop_account_domain
+  name     = local.develop_account_domain
 }
 
 resource "aws_route53_record" "develop_route53_ns_record" {

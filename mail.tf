@@ -1,6 +1,6 @@
 locals {
-  zone_id = data.aws_route53_zone.public.zone_id
-  email_bucket_name = "${var.prefix}-${var.ses_bucket}-${random_string.suffix.result}"
+  zone_id               = data.aws_route53_zone.public.zone_id
+  email_bucket_name     = "${var.prefix}-${var.ses_bucket}-${random_string.suffix.result}"
   ses_object_key_prefix = "ses"
 }
 
@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "ses_kms_policy" {
     ]
     resources = ["*"]
     principals {
-      type        = "AWS"
+      type = "AWS"
       identifiers = [
         data.aws_iam_user.terraform_cloud_workspace_user.arn,
         "arn:aws:iam::${data.aws_caller_identity.account.account_id}:root"
@@ -143,7 +143,7 @@ resource "aws_s3_bucket" "ses_bucket" {
   bucket        = local.email_bucket_name
   acl           = "private"
   force_destroy = true
-  policy = data.aws_iam_policy_document.s3_allow_ses_puts.json
+  policy        = data.aws_iam_policy_document.s3_allow_ses_puts.json
 
   server_side_encryption_configuration {
     rule {
@@ -157,7 +157,7 @@ resource "aws_s3_bucket" "ses_bucket" {
 
 resource "aws_kms_key" "ses_aws_kms_key" {
   deletion_window_in_days = 7
-  policy = data.aws_iam_policy_document.ses_kms_policy.json
+  policy                  = data.aws_iam_policy_document.ses_kms_policy.json
 }
 
 resource "aws_ses_receipt_rule" "main" {
