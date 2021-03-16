@@ -136,7 +136,7 @@ data "aws_iam_policy_document" "FirehoseDeliveryPolicy_policy_document" {
 resource "aws_iam_policy" "FirehoseDeliveryPolicy" {
   provider = aws.audit
   name = "Firehose_Delivery_Policy"
-  policy = data.aws_iam_policy_document.FirehoseDeliveryRole_policy_document.json
+  policy = data.aws_iam_policy_document.FirehoseDeliveryPolicy_policy_document.json
 }
 
 resource "aws_iam_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
