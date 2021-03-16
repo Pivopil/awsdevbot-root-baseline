@@ -12,6 +12,10 @@ provider "aws" {
   }
 }
 
+data "aws_caller_identity" "develop_account" {
+  provider = aws.develop
+}
+
 resource "aws_s3_bucket" "develop-s3" {
   provider      = aws.develop
   bucket_prefix = "develop-s3-bucket-"

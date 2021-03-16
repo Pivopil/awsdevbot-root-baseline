@@ -10,6 +10,10 @@ provider "aws" {
   }
 }
 
+data "aws_caller_identity" "uat_account" {
+  provider = aws.uat
+}
+
 resource "aws_route53_zone" "uat_route53_zone" {
   provider = aws.uat
   name     = local.uat_account_domain
