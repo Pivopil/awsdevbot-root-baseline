@@ -70,7 +70,9 @@ data "aws_iam_policy_document" "CWLtoFirehosePolicy_policy_document" {
     actions = [
       "iam:PassRole"]
     resources = [
-      aws_iam_role.CWLtoFirehoseRole.arn]
+        "*"
+//      aws_iam_role.CWLtoFirehoseRole.arn
+    ]
   }
 }
 
@@ -80,7 +82,7 @@ resource "aws_iam_policy" "CWLtoFirehosePolicy" {
   policy = data.aws_iam_policy_document.CWLtoFirehosePolicy_policy_document.json
 }
 
-resource "aws_iam_policy_attachment" "CWLtoFirehoseRole_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "CWLtoFirehoseRole_policy_attachment" {
   provider = aws.audit
   name = aws_iam_role.CWLtoFirehoseRole.name
   policy_arn = aws_iam_policy.CWLtoFirehosePolicy.arn
@@ -139,7 +141,7 @@ resource "aws_iam_policy" "FirehoseDeliveryPolicy" {
   policy = data.aws_iam_policy_document.FirehoseDeliveryPolicy_policy_document.json
 }
 
-resource "aws_iam_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
   provider = aws.audit
   name = aws_iam_role.FirehoseDeliveryRole.name
   policy_arn = aws_iam_policy.FirehoseDeliveryPolicy.arn
