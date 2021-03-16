@@ -195,13 +195,97 @@ resource "aws_s3_bucket" "LoggingS3Bucket" {
   bucket = "audit-logs-${random_string.LoggingS3Bucket_suffix.result}"
 }
 
+resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
+  provider = aws.audit
+  bucket = aws_s3_bucket.LoggingS3Bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "LoggingS3BucketPolicy"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = {
+          AWS: [
+            data.aws_caller_identity.develop_account.account_id,
+            data.aws_caller_identity.uat_account.account_id
+          ]
+        }
+        Action    = [
+          "s3:Get*",
+          "s3:List*"
+        ]
+        Resource = [
+          aws_s3_bucket.LoggingS3Bucket.arn,
+          "${aws_s3_bucket.LoggingS3Bucket.arn}/*",
+        ]
+      },
+    ]
+  })
+}
+
+resource "aws_kinesis_stream" "kinesis_stream" {
+  name = "Centralized-Logging-Delivery-Stream"
+  shard_count = 0
+}
+
+resource "aws_iam_role" "firehose_role" {
+  name = "audit-kinesis-firehose-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "read_policy" {
+  name = "audit-kinesis-read-policy"
+
+  role = aws_iam_role.firehose_role.id
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:${var.region}:${data.aws_caller_identity.audit_account.account_id}:stream/${aws_kinesis_stream.kinesis_stream.name}"
+            ]
+        }
+]
+}
+EOF
+}
+
 //https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_firehose_delivery_stream
 //https://github.com/easyawslearn/terraform-aws-kinesis/blob/master/main.tf
 resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" {
   provider = aws.audit
   destination = "extended_s3"
-  name = "Centralized-Logging-Delivery-Stream"
-  //  DirectPut
+  name = aws_kinesis_stream.kinesis_stream.name
+
+  // ???  DirectPut
+  kinesis_source_configuration {
+    kinesis_stream_arn = aws_kinesis_stream.kinesis_stream.arn
+    role_arn           = aws_iam_role.firehose_role.arn
+  }
+
   extended_s3_configuration {
     bucket_arn = aws_s3_bucket.LoggingS3Bucket.arn
     role_arn = aws_iam_role.FirehoseDeliveryRole.arn
@@ -212,6 +296,7 @@ resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" 
   }
   depends_on = [
     aws_iam_role.CWLtoFirehoseRole,
-    aws_iam_policy.CWLtoFirehosePolicy
+    aws_iam_policy.CWLtoFirehosePolicy,
+    aws_kinesis_stream.kinesis_stream
   ]
 }
