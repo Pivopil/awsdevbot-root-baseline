@@ -19,11 +19,11 @@ data "aws_caller_identity" "audit_account" {
 
 data "aws_iam_policy_document" "CWLtoFirehoseRole_policy_document" {
   provider = aws.audit
-  version = "2012-10-17"
+  version  = "2012-10-17"
   statement {
     effect = "Allow"
     actions = [
-      "sts:AssumeRole"]
+    "sts:AssumeRole"]
     principals {
       identifiers = [
         "logs.eu-north-1.amazonaws.com",
@@ -50,74 +50,65 @@ data "aws_iam_policy_document" "CWLtoFirehoseRole_policy_document" {
 }
 
 resource "aws_iam_role" "CWLtoFirehoseRole" {
-  provider = aws.audit
-  name = "CWLtoFirehoseRole"
+  provider           = aws.audit
+  name               = "CWLtoFirehoseRole"
   assume_role_policy = data.aws_iam_policy_document.CWLtoFirehoseRole_policy_document.json
 }
 
 data "aws_iam_policy_document" "CWLtoFirehosePolicy_policy_document" {
   provider = aws.audit
-  version = "2012-10-17"
+  version  = "2012-10-17"
   statement {
-    effect = "Allow"
-    actions = [
-      "firehose:PutRecord"]
-//    aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn
-    resources = ["*"]
+    effect    = "Allow"
+    actions   = ["firehose:PutRecord"]
+    resources = [aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn]
   }
   statement {
-    effect = "Allow"
-    actions = [
-      "iam:PassRole"]
-    resources = [
-        "*"
-//      aws_iam_role.CWLtoFirehoseRole.arn
-    ]
+    effect    = "Allow"
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.CWLtoFirehoseRole.arn]
   }
 }
 
 resource "aws_iam_policy" "CWLtoFirehosePolicy" {
   provider = aws.audit
-  name = "CWL_to_Kinesis_Policy"
-  policy = data.aws_iam_policy_document.CWLtoFirehosePolicy_policy_document.json
+  name     = "CWL_to_Kinesis_Policy"
+  policy   = data.aws_iam_policy_document.CWLtoFirehosePolicy_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "CWLtoFirehoseRole_policy_attachment" {
-  provider = aws.audit
-  role = aws_iam_role.CWLtoFirehoseRole.name
+  provider   = aws.audit
+  role       = aws_iam_role.CWLtoFirehoseRole.name
   policy_arn = aws_iam_policy.CWLtoFirehosePolicy.arn
 }
 
 data "aws_iam_policy_document" "FirehoseDeliveryRole_policy_document" {
   provider = aws.audit
-  version = "2012-10-17"
+  version  = "2012-10-17"
   statement {
     effect = "Allow"
     principals {
-      identifiers = [
-        "firehose.amazonaws.com"]
-      type = "Service"
+      identifiers = ["firehose.amazonaws.com"]
+      type        = "Service"
     }
-    actions = [
-      "sts:AssumeRole"]
+    actions = ["sts:AssumeRole"]
     condition {
-      test = "StringEquals"
-      values = [
-        data.aws_caller_identity.audit_account.account_id]
+      test     = "StringEquals"
+      values   = [data.aws_caller_identity.audit_account.account_id]
       variable = "sts:ExternalId"
     }
   }
 }
 
 resource "aws_iam_role" "FirehoseDeliveryRole" {
-  provider = aws.audit
-  name = "FirehoseDeliveryRole"
+  provider           = aws.audit
+  name               = "FirehoseDeliveryRole"
   assume_role_policy = data.aws_iam_policy_document.FirehoseDeliveryRole_policy_document.json
 }
 
 data "aws_iam_policy_document" "FirehoseDeliveryPolicy_policy_document" {
   provider = aws.audit
-  version = "2012-10-17"
+  version  = "2012-10-17"
   statement {
     effect = "Allow"
     actions = [
@@ -137,20 +128,20 @@ data "aws_iam_policy_document" "FirehoseDeliveryPolicy_policy_document" {
 
 resource "aws_iam_policy" "FirehoseDeliveryPolicy" {
   provider = aws.audit
-  name = "Firehose_Delivery_Policy"
-  policy = data.aws_iam_policy_document.FirehoseDeliveryPolicy_policy_document.json
+  name     = "Firehose_Delivery_Policy"
+  policy   = data.aws_iam_policy_document.FirehoseDeliveryPolicy_policy_document.json
 }
 
 resource "aws_iam_role_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
-  provider = aws.audit
-  role = aws_iam_role.FirehoseDeliveryRole.name
+  provider   = aws.audit
+  role       = aws_iam_role.FirehoseDeliveryRole.name
   policy_arn = aws_iam_policy.FirehoseDeliveryPolicy.arn
 }
 
 resource "aws_cloudwatch_log_destination" "LogDestination" {
-  provider = aws.audit
-  name = "CentralLogDestination"
-  role_arn = aws_iam_role.CWLtoFirehoseRole.arn
+  provider   = aws.audit
+  name       = "CentralLogDestination"
+  role_arn   = aws_iam_role.CWLtoFirehoseRole.arn
   target_arn = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn
 
   depends_on = [
@@ -163,19 +154,19 @@ resource "aws_cloudwatch_log_destination" "LogDestination" {
 resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination_policy" {
   provider = aws.audit
   access_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        Effect: "Allow",
-        Principal: {
-          AWS: [
+        Effect : "Allow",
+        Principal : {
+          AWS : [
             data.aws_caller_identity.develop_account.account_id,
             data.aws_caller_identity.uat_account.account_id,
           ]
         },
-        Action: "logs:PutSubscriptionFilter",
-        Resource: "*"
-//        Resource: "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"
+        Action : "logs:PutSubscriptionFilter",
+        Resource : aws_cloudwatch_log_destination.LogDestination.arn
+        //        Resource: "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"
       }
     ]
   })
@@ -190,25 +181,25 @@ resource "random_string" "LoggingS3Bucket_suffix" {
 
 resource "aws_s3_bucket" "LoggingS3Bucket" {
   provider = aws.audit
-  bucket = "audit-logs-${random_string.LoggingS3Bucket_suffix.result}"
+  bucket   = "audit-logs-${random_string.LoggingS3Bucket_suffix.result}"
 }
 
 resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
   provider = aws.audit
-  bucket = aws_s3_bucket.LoggingS3Bucket.id
+  bucket   = aws_s3_bucket.LoggingS3Bucket.id
   policy = jsonencode({
     Version = "2012-10-17"
     Id      = "LoggingS3BucketPolicy"
     Statement = [
       {
-        Effect    = "Allow"
+        Effect = "Allow"
         Principal = {
-          AWS: [
+          AWS : [
             data.aws_caller_identity.develop_account.account_id,
             data.aws_caller_identity.uat_account.account_id
           ]
         }
-        Action    = [
+        Action = [
           "s3:Get*",
           "s3:List*"
         ]
@@ -224,17 +215,17 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
 //https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_firehose_delivery_stream
 //https://github.com/easyawslearn/terraform-aws-kinesis/blob/master/main.tf
 resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" {
-  provider = aws.audit
+  provider    = aws.audit
   destination = "extended_s3"
-  name = "Centralized-Logging-Delivery-Stream"
+  name        = "Centralized-Logging-Delivery-Stream"
 
   extended_s3_configuration {
-    bucket_arn = aws_s3_bucket.LoggingS3Bucket.arn
-    role_arn = aws_iam_role.FirehoseDeliveryRole.arn
+    bucket_arn         = aws_s3_bucket.LoggingS3Bucket.arn
+    role_arn           = aws_iam_role.FirehoseDeliveryRole.arn
     compression_format = "UNCOMPRESSED"
-    buffer_interval = 300
-    buffer_size = 50
-    prefix = "CentralizedAccountLogs/"
+    buffer_interval    = 300
+    buffer_size        = 50
+    prefix             = "CentralizedAccountLogs/"
   }
   depends_on = [
     aws_iam_role.CWLtoFirehoseRole,
