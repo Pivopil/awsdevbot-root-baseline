@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "CWLtoFirehosePolicy_policy_document" {
   statement {
     effect    = "Allow"
     actions   = ["iam:PassRole"]
-    resources = [aws_iam_role.CWLtoFirehoseRole.arn]
+    resources = ["*"]
   }
 }
 
