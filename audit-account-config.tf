@@ -84,7 +84,7 @@ resource "aws_iam_policy" "CWLtoFirehosePolicy" {
 
 resource "aws_iam_role_policy_attachment" "CWLtoFirehoseRole_policy_attachment" {
   provider = aws.audit
-  name = aws_iam_role.CWLtoFirehoseRole.name
+  role = aws_iam_role.CWLtoFirehoseRole.name
   policy_arn = aws_iam_policy.CWLtoFirehosePolicy.arn
 }
 
@@ -143,7 +143,7 @@ resource "aws_iam_policy" "FirehoseDeliveryPolicy" {
 
 resource "aws_iam_role_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
   provider = aws.audit
-  name = aws_iam_role.FirehoseDeliveryRole.name
+  role = aws_iam_role.FirehoseDeliveryRole.name
   policy_arn = aws_iam_policy.FirehoseDeliveryPolicy.arn
 }
 
