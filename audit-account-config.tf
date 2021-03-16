@@ -172,7 +172,8 @@ resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination
           ]
         },
         Action: "logs:PutSubscriptionFilter",
-        Resource: "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"
+        Resource: "*"
+//        Resource: "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"
       }
     ]
   })
