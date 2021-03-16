@@ -12,7 +12,3 @@ provider "aws" {
   }
 }
 
-resource "aws_s3_bucket" "audit_test_bucket" {
-  provider = aws.audit
-  bucket = "audit-test-ghfj85"
-}
