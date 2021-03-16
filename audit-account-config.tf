@@ -224,11 +224,13 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
 }
 
 resource "aws_kinesis_stream" "kinesis_stream" {
+  provider = aws.audit
   name = "Centralized-Logging-Delivery-Stream"
   shard_count = 1
 }
 
 resource "aws_iam_role" "firehose_role" {
+  provider = aws.audit
   name = "audit-kinesis-firehose-role"
 
   assume_role_policy = <<EOF
@@ -249,6 +251,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "read_policy" {
+  provider = aws.audit
   name = "audit-kinesis-read-policy"
 
   role = aws_iam_role.firehose_role.id
