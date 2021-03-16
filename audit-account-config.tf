@@ -150,12 +150,12 @@ resource "aws_cloudwatch_log_destination" "LogDestination" {
   name = "CentralLogDestination"
   role_arn = aws_iam_role.CWLtoFirehoseRole.arn
   target_arn = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn
-
-  depends_on = [
-    aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream,
-    aws_iam_role.CWLtoFirehoseRole,
-    aws_iam_policy.CWLtoFirehosePolicy
-  ]
+//
+//  depends_on = [
+//    aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream,
+//    aws_iam_role.CWLtoFirehoseRole,
+//    aws_iam_policy.CWLtoFirehosePolicy
+//  ]
 }
 
 resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination_policy" {
@@ -233,8 +233,8 @@ resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" 
     buffer_size = 50
     prefix = "CentralizedAccountLogs/"
   }
-  depends_on = [
-    aws_iam_role.CWLtoFirehoseRole,
-    aws_iam_policy.CWLtoFirehosePolicy,
-  ]
+//  depends_on = [
+//    aws_iam_role.CWLtoFirehoseRole,
+//    aws_iam_policy.CWLtoFirehosePolicy,
+//  ]
 }
