@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "CWLtoFirehosePolicy_policy_document" {
   statement {
     effect    = "Allow"
     actions   = ["firehose:PutRecord"]
-    resources = [aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn]
+    resources = ["*"]
   }
   statement {
     effect    = "Allow"
