@@ -179,10 +179,7 @@ resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination
       }
     ]
   })
-  destination_name = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.name
-  depends_on = [
-    aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream
-  ]
+  destination_name = aws_cloudwatch_log_destination.LogDestination.name
 }
 
 resource "random_string" "LoggingS3Bucket_suffix" {
