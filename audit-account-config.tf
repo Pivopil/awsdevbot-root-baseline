@@ -147,7 +147,6 @@ resource "aws_iam_policy_attachment" "FirehoseDeliveryRole_policy_attachment" {
 
 resource "aws_cloudwatch_log_destination" "LogDestination" {
   provider = aws.audit
-  // ???
   name = "CentralLogDestination"
   role_arn = aws_iam_role.CWLtoFirehoseRole.arn
   target_arn = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.arn
@@ -159,28 +158,24 @@ resource "aws_cloudwatch_log_destination" "LogDestination" {
   ]
 }
 
-data "aws_iam_policy_document" "aws_cloudwatch_log_destination_policy_document" {
-  provider = aws.audit
-  version = "2012-10-17"
-  statement {
-    effect = "Allow"
-    principals {
-      identifiers = [
-        data.aws_caller_identity.develop_account.account_id,
-        data.aws_caller_identity.uat_account.account_id,
-      ]
-      type = "AWS"
-    }
-    actions = [
-      "logs:PutSubscriptionFilter"]
-    resources = [
-      "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"]
-  }
-}
-
 resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination_policy" {
   provider = aws.audit
-  access_policy = data.aws_iam_policy_document.aws_cloudwatch_log_destination_policy_document.json
+  access_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        Effect: "Allow",
+        Principal: {
+          AWS: [
+            data.aws_caller_identity.develop_account.account_id,
+            data.aws_caller_identity.uat_account.account_id,
+          ]
+        },
+        Action: "logs:PutSubscriptionFilter",
+        Resource: "arn:aws:logs:${var.region}:${data.aws_caller_identity.audit_account.account_id}:destination:CentralLogDestination"
+      }
+    ]
+  })
   destination_name = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.name
 }
 
@@ -223,71 +218,12 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
   })
 }
 
-resource "aws_kinesis_stream" "kinesis_stream" {
-  provider = aws.audit
-  name = "Centralized-Logging-Delivery-Stream"
-  shard_count = 1
-}
-
-resource "aws_iam_role" "firehose_role" {
-  provider = aws.audit
-  name = "audit-kinesis-firehose-role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "firehose.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy" "read_policy" {
-  provider = aws.audit
-  name = "audit-kinesis-read-policy"
-
-  role = aws_iam_role.firehose_role.id
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "kinesis:DescribeStream",
-                "kinesis:GetShardIterator",
-                "kinesis:GetRecords"
-            ],
-            "Resource": [
-                "arn:aws:kinesis:${var.region}:${data.aws_caller_identity.audit_account.account_id}:stream/${aws_kinesis_stream.kinesis_stream.name}"
-            ]
-        }
-]
-}
-EOF
-}
-
 //https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_firehose_delivery_stream
 //https://github.com/easyawslearn/terraform-aws-kinesis/blob/master/main.tf
 resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" {
   provider = aws.audit
   destination = "extended_s3"
-  name = aws_kinesis_stream.kinesis_stream.name
-
-  // ???  DirectPut
-  kinesis_source_configuration {
-    kinesis_stream_arn = aws_kinesis_stream.kinesis_stream.arn
-    role_arn           = aws_iam_role.firehose_role.arn
-  }
+  name = "Centralized-Logging-Delivery-Stream"
 
   extended_s3_configuration {
     bucket_arn = aws_s3_bucket.LoggingS3Bucket.arn
@@ -300,6 +236,5 @@ resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" 
   depends_on = [
     aws_iam_role.CWLtoFirehoseRole,
     aws_iam_policy.CWLtoFirehosePolicy,
-    aws_kinesis_stream.kinesis_stream
   ]
 }
