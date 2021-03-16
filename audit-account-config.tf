@@ -127,8 +127,8 @@ data "aws_iam_policy_document" "FirehoseDeliveryPolicy_policy_document" {
       "s3:PutObject",
     ]
     resources = [
-      aws_s3_bucket.LoggingS3Bucket.id,
-      "${aws_s3_bucket.LoggingS3Bucket.id}/*"
+      aws_s3_bucket.LoggingS3Bucket.arn,
+      "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
     ]
   }
 }
