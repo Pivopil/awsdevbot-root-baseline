@@ -225,7 +225,7 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
 
 resource "aws_kinesis_stream" "kinesis_stream" {
   name = "Centralized-Logging-Delivery-Stream"
-  shard_count = 0
+  shard_count = 1
 }
 
 resource "aws_iam_role" "firehose_role" {
