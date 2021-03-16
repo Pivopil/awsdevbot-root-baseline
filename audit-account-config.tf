@@ -14,5 +14,5 @@ provider "aws" {
 
 resource "aws_s3_bucket" "audit_test_bucket" {
   provider = aws.audit
-  name = "audit-test-ghfj85"
+  bucket = "audit-test-ghfj85"
 }
