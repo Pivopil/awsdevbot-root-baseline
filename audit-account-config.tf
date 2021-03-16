@@ -184,7 +184,7 @@ resource "aws_cloudwatch_log_destination_policy" "aws_cloudwatch_log_destination
   destination_name = aws_kinesis_firehose_delivery_stream.FirehoseLoggingDeliveryStream.name
 }
 
-resource "random_string" "suffix" {
+resource "random_string" "LoggingS3Bucket_suffix" {
   length  = 4
   special = false
   upper   = false
@@ -192,7 +192,7 @@ resource "random_string" "suffix" {
 
 resource "aws_s3_bucket" "LoggingS3Bucket" {
   provider = aws.audit
-  bucket = "audit-logs-${random_string.suffix.result}"
+  bucket = "audit-logs-${random_string.LoggingS3Bucket_suffix.result}"
 }
 
 //https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kinesis_firehose_delivery_stream
