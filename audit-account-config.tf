@@ -182,6 +182,20 @@ resource "random_string" "LoggingS3Bucket_suffix" {
 resource "aws_s3_bucket" "LoggingS3Bucket" {
   provider = aws.audit
   bucket   = "audit-logs-${random_string.LoggingS3Bucket_suffix.result}"
+
+  lifecycle_rule {
+    enabled = true
+
+    transition {
+      days          = 10
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 30
+    }
+  }
+
 }
 
 resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
@@ -191,6 +205,22 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
     Version = "2012-10-17"
     Id      = "LoggingS3BucketPolicy"
     Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          "Service": "delivery.logs.amazonaws.com"
+        },
+        Action = "s3:*",
+        Resource = "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
+      },
+      {
+        Effect = "Allow",
+        Principal = {
+          "Service": "delivery.logs.amazonaws.com"
+        },
+        Action = "s3:*",
+        Resource = "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
+      },
       {
         Effect = "Allow"
         Principal = {
@@ -208,6 +238,17 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
           "${aws_s3_bucket.LoggingS3Bucket.arn}/*",
         ]
       },
+      {
+        Effect = "Allow",
+        Principal = {
+          "AWS": [
+            "arn:aws:iam::${data.aws_caller_identity.develop_account.account_id}:root",
+            "arn:aws:iam::${data.aws_caller_identity.uat_account.account_id}:root"
+          ]
+        },
+        Action = "s3:PutObject",
+        Resource = "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
+      }
     ]
   })
 }
