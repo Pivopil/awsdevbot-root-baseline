@@ -232,3 +232,7 @@ resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" 
     aws_iam_policy.CWLtoFirehosePolicy,
   ]
 }
+
+output "audit_destination_arn" {
+  value = aws_cloudwatch_log_destination.LogDestination.arn
+}
