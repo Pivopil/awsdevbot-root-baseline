@@ -239,11 +239,12 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
         ]
       },
       {
+// us-east-1 elb principal id 127311923021
+// https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
         Effect = "Allow",
         Principal = {
           "AWS": [
-            "arn:aws:iam::${data.aws_caller_identity.develop_account.account_id}:root",
-            "arn:aws:iam::${data.aws_caller_identity.uat_account.account_id}:root"
+            "127311923021"
           ]
         },
         Action = "s3:PutObject",
