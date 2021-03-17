@@ -277,3 +277,7 @@ resource "aws_kinesis_firehose_delivery_stream" "FirehoseLoggingDeliveryStream" 
 output "audit_destination_arn" {
   value = aws_cloudwatch_log_destination.LogDestination.arn
 }
+
+output "audit_bucket_arn" {
+  value = aws_s3_bucket.LoggingS3Bucket.arn
+}
