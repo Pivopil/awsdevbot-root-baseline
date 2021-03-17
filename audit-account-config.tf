@@ -278,6 +278,6 @@ output "audit_destination_arn" {
   value = aws_cloudwatch_log_destination.LogDestination.arn
 }
 
-output "audit_bucket_arn" {
-  value = aws_s3_bucket.LoggingS3Bucket.arn
+output "audit_bucket" {
+  value = aws_s3_bucket.LoggingS3Bucket.bucket
 }
