@@ -214,14 +214,6 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
         Resource = "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
       },
       {
-        Effect = "Allow",
-        Principal = {
-          "Service": "delivery.logs.amazonaws.com"
-        },
-        Action = "s3:*",
-        Resource = "${aws_s3_bucket.LoggingS3Bucket.arn}/*"
-      },
-      {
         Effect = "Allow"
         Principal = {
           AWS : [
@@ -244,7 +236,7 @@ resource "aws_s3_bucket_policy" "LoggingS3Bucket_policy" {
         Effect = "Allow",
         Principal = {
           "AWS": [
-            "127311923021"
+            "arn:aws:iam::127311923021:root"
           ]
         },
         Action = "s3:PutObject",
